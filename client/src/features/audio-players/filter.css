@@ -1,0 +1,17 @@
+.filter-container button {
+    margin: 2rem;
+    min-width: 5rem;
+    padding: 0.5rem 1rem;
+    border: none;
+    background: #635985;
+    color: #393053;
+    border-radius: 1rem;
+    border: 2px solid #635985;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button.active {
+    background: #393053;
+    color: white;
+}

@@ -1,0 +1,47 @@
+.input-container {
+    height: 30%;
+    width: 60%;
+    margin: 0;
+    padding: 0;
+    border: 2px solid white;
+    padding: .5em;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: .5em;
+}
+
+
+.tag-item {
+    background-color: rgb(88, 89, 90);
+    display: inline-block;
+    padding: .5em .75em;
+    border-radius: 20px;
+}
+
+.text {}
+
+.close {
+    height: 20px;
+    width: 20px;
+    background-color: azure;
+    display: inline-block;
+    color: black;
+    border-radius: 50%;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: .5em;
+    font-size: 1.3em;
+    cursor: pointer;
+}
+
+.tags-input {
+    flex-grow: 1;
+    padding: .5em 0;
+    border: none;
+    outline: none;
+    background-color: black;
+    color: white;
+}
