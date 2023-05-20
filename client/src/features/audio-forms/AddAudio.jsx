@@ -33,26 +33,34 @@ const AddAudio = () => {
 
         const tagsJson = JSON.stringify(tags);
 
+        // helps to check if a file exists on the server side
+        const fileNames = JSON.stringify({
+            audioName: audioFile.item(0).name,
+            imgName: imgFile.item(0).name,
+        })
+
+        formData.append("filenames", fileNames);
+
         formData.append("tags", tagsJson);
 
-
-        let response;
 
         //inputs must be defined
         const canSave = [imgFile, audioFile].every(Boolean) && !isLoading;
 
+        let response;
+
         if (canSave) {
-            try {
-                response = await addAudio({ username: "miguel", formData }).unwrap();
-            } catch (error) {
-                console.error(error);
+            response = await addAudio({ username: "miguel", formData });
+
+            if (response.error) {
+                setH2Content(response.error.data.status);
+                setH3Content(response.error.data.message);
+            } else {
+                setH2Content(response.data.status);
+                setH3Content(response.data.message);
             }
         }
 
-        const json = response;
-
-        setH2Content(json?.status);
-        setH3Content(json?.status);
 
     }
 

@@ -8,6 +8,8 @@ const fileSizeLimiter = require('./middleware/fileSizeLimiter');
 
 const filesPayloadExists = require('./middleware/filesPayloadExist');
 
+const filePreventDuplicate = require('./middleware/filePreventDuplicate');
+
 const fs = require('fs');
 
 const PORT = 4000;
@@ -59,6 +61,7 @@ app.get('/audio/:audioName/:username', (req, res) => {
 
 app.post('/upload/:username', fileUpload({ createParentPath: true }),
     filesPayloadExists,
+    filePreventDuplicate,
     filesExtLimiter(['.png', '.jpg', '.jpeg', '.mp3']),
     fileSizeLimiter,
     async (req, res) => {
@@ -66,47 +69,27 @@ app.post('/upload/:username', fileUpload({ createParentPath: true }),
 
         const tags = JSON.parse(req.body.tags);
 
+        const { audioName, imgName } = JSON.parse(req.body.filenames);
+
         const { username } = req.params;
 
-        let audioName;
-        let imgName;
+        const imageFilePath = path.join(__dirname, "files", username, "images", imgName);
 
-        Object.keys(files).forEach(key => {
+        files[imgName].mv(imageFilePath, (err) => {
+            if (err) return res.status(500).json({ status: "error", message: err });
+        })
 
-            // if it's an image (restricted to jpg and jpeg in the client side already)
-            if (key.toLowerCase().endsWith('.jpg') || key.toLowerCase().endsWith('.jpeg') || key.toLowerCase().endsWith('.png')) {
-                const filePath = path.join(__dirname, "files", username, "images", files[key].name);
+        const audioFilePath = path.join(__dirname, "files", username, "audio", audioName);
 
-                imgName = key;
-
-                files[key].mv(filePath, (err) => {
-                    if (err) return res.status(500).json({ status: "error", message: err });
-
-                })
-            }
-            else if (key === "tags") {
-
-            }
-            else {
-
-                audioName = key;
-
-                const filePath = path.join(__dirname, "files", username, "audio", files[key].name);
-
-                files[key].mv(filePath, (err) => {
-                    if (err) return res.status(500).json({ status: "error", message: err });
-
-                })
-            }
-
-
+        files[audioName].mv(audioFilePath, (err) => {
+            if (err) return res.status(500).json({ status: "error", message: err });
         })
 
         // now we can upload it to the database
         const uploadAudioInfo = await pool.query("INSERT INTO audios (audio_name, img_name, username, type) VALUES($1, $2, $3, $4) RETURNING *", [audioName, imgName, username, tags]);
 
 
-        return res.json({ status: "success", message: Object.keys(files).toString() })
+        return res.json({ status: "success", message: `${audioName}, ${imgName}` })
     })
 
 app.listen(PORT, () => console.log(`server running on port ${PORT}`));
