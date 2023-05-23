@@ -31,6 +31,19 @@ app.use((req, res, next) => {
     next();
 });
 
+app.delete('/logout', (req, res) => {
+    const { refreshToken } = req.body;
+
+    if (refreshToken === null) {
+        return res.status(401).json({ status: "error", message: "token does not exists" });
+    }
+
+    const updateToken = pool.query("UPDATE users SET refreshtoken = null WHERE refreshtoken = $1", [refreshToken]);
+
+
+    res.status(200).json({ status: "success", message: "successfully logged out" });
+})
+
 
 app.post('/token', async (req, res) => {
     const { username, refreshToken } = req.body;
@@ -72,7 +85,6 @@ app.post('/login', async (req, res) => {
     // check if user exists
     const userExists = await pool.query('SELECT user_id FROM users WHERE username = ($1) AND password = crypt(($2),password)', [username, password]);
 
-    console.log(userExists.rows);
 
     if (userExists.rowCount === 0) {
         return res.status(404).json({ status: "error", message: "account does not exist" });
@@ -82,7 +94,6 @@ app.post('/login', async (req, res) => {
         try {
             accessToken = jwt.sign(
                 {
-                    userId: userExists,
                     username
                 },
                 process.env.SECRET_KEY_ACCESS,
@@ -91,11 +102,13 @@ app.post('/login', async (req, res) => {
 
             refreshToken = jwt.sign(
                 {
-                    userId: userExists,
                     username
                 },
                 process.env.SECRET_KEY_REFRESH,
             )
+
+            // update refreshToken of the user in db
+            const updateRToken = await pool.query("UPDATE users SET refreshtoken = $1 WHERE username = $2", [refreshToken, username]);
         } catch (error) {
             console.log(error);
             res.status(500).json({ status: "error", message: "problem with accessToken" });
@@ -105,18 +118,16 @@ app.post('/login', async (req, res) => {
         return res.status(200).json({
             success: true,
             data: {
-                userId: userExists,
                 username,
                 accessToken,
-                refreshToken,
             }
         })
     }
 })
 
-app.post('/signup', async (req, res, next) => {
+app.post('/signup', async (req, res) => {
 
-    const { username, password, refreshToken } = req.body;
+    const { username, password } = req.body;
 
     let createUser;
 
@@ -137,6 +148,9 @@ app.post('/signup', async (req, res, next) => {
                 { username },
                 process.env.SECRET_KEY_REFRESH,
             );
+
+            const updateRToken = await pool.query("UPDATE users SET refreshtoken = $1 WHERE username = $2", [refreshToken, username]);
+
         } catch (err) {
             return res.status(401);
         }
@@ -155,7 +169,6 @@ app.post('/signup', async (req, res, next) => {
                 userId: createUser.rows.user_id,
                 username,
                 accessToken,
-                refreshToken,
             }
         })
     } else {
@@ -165,7 +178,7 @@ app.post('/signup', async (req, res, next) => {
 
 
 // get's info about all of the audio's 
-app.get('/audio/:username', async (req, res) => {
+app.get('/audio/:username', authenticateToken, async (req, res) => {
     try {
         const { username } = req.params;
 
@@ -173,7 +186,7 @@ app.get('/audio/:username', async (req, res) => {
 
         return res.json(allAudioInfo.rows);
     } catch (error) {
-        console.error(error)
+        return res.status(409).json({ status: "error", message: "error in getting audio info" });
     }
 });
 
