@@ -25,6 +25,7 @@ const Navbar = () => {
                     <ul>
                         <li><Link to="/">Music Library</Link></li>
                         <li><Link to="/upload-audio">Upload Audio</Link></li>
+                        <li><Link to="/login">Login</Link></li>
                     </ul>
                 </div>
             </div>

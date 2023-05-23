@@ -178,7 +178,7 @@ app.post('/signup', async (req, res) => {
 
 
 // get's info about all of the audio's 
-app.get('/audio/:username', authenticateToken, async (req, res) => {
+app.get('/audio/:username', async (req, res) => {
     try {
         const { username } = req.params;
 
