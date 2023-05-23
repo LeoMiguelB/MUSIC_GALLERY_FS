@@ -10,7 +10,11 @@ const filesPayloadExists = require('./middleware/filesPayloadExist');
 
 const filePreventDuplicate = require('./middleware/filePreventDuplicate');
 
+const authenticateToken = require('./middleware/authenticateToken');
+
 const fs = require('fs');
+
+const jwt = require("jsonwebtoken");
 
 const PORT = 4000;
 
@@ -18,10 +22,146 @@ const app = express();
 
 const pool = require('./db');
 
+require('dotenv').config();
+
+app.use(express.json());
+
 app.use((req, res, next) => {
     res.setHeader("Access-Control-Allow-Origin", "*");
     next();
 });
+
+
+app.post('/token', async (req, res) => {
+    const { username, refreshToken } = req.body;
+
+    const userId = await pool.query('SELECT user_id FROM users WHERE username = $1 AND refreshToken = $2', [username, refreshToken]);
+
+    if (refreshToken === null) {
+        return res.status(401).json({ status: "error", message: "token does not exists" });
+    }
+    if (userId.rowCount === 0) {
+        return res.status(403).json({ status: "error", message: "invalid token" });
+    }
+
+    jwt.verify(refreshToken, process.env.SECRET_KEY_REFRESH, (err, user) => {
+        if (err) return res.status(403).json({ status: "error" });
+
+        const accessToken = jwt.sign(
+            { username },
+            process.env.SECRET_KEY_ACCESS,
+            { expiresIn: "1h" }
+        );
+
+        return res.status(200).json({
+            success: true,
+            data: {
+                userId: user.id,
+                username,
+                accessToken,
+            }
+        })
+    })
+
+})
+
+app.post('/login', async (req, res) => {
+    const { username, password } = req.body;
+
+
+    // check if user exists
+    const userExists = await pool.query('SELECT user_id FROM users WHERE username = ($1) AND password = crypt(($2),password)', [username, password]);
+
+    console.log(userExists.rows);
+
+    if (userExists.rowCount === 0) {
+        return res.status(404).json({ status: "error", message: "account does not exist" });
+    } else {
+        let accessToken;
+        let refreshToken;
+        try {
+            accessToken = jwt.sign(
+                {
+                    userId: userExists,
+                    username
+                },
+                process.env.SECRET_KEY_ACCESS,
+                { expiresIn: "1h" }
+            )
+
+            refreshToken = jwt.sign(
+                {
+                    userId: userExists,
+                    username
+                },
+                process.env.SECRET_KEY_REFRESH,
+            )
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({ status: "error", message: "problem with accessToken" });
+        }
+
+
+        return res.status(200).json({
+            success: true,
+            data: {
+                userId: userExists,
+                username,
+                accessToken,
+                refreshToken,
+            }
+        })
+    }
+})
+
+app.post('/signup', async (req, res, next) => {
+
+    const { username, password, refreshToken } = req.body;
+
+    let createUser;
+
+    const checkUserExists = await pool.query("SELECT username FROM users WHERE username = ($1)", [username]);
+
+    if (checkUserExists.rowCount === 0) {
+
+        let accessToken;
+        let refreshToken;
+        try {
+            accessToken = jwt.sign(
+                { username },
+                process.env.SECRET_KEY_ACCESS,
+                { expiresIn: "1h" }
+            );
+
+            refreshToken = jwt.sign(
+                { username },
+                process.env.SECRET_KEY_REFRESH,
+            );
+        } catch (err) {
+            return res.status(401);
+        }
+
+        try {
+
+            // encrypt the password 
+            createUser = await pool.query("INSERT INTO users (username, password, refreshToken) VALUES (($1), crypt(($2), gen_salt('bf')), ($3)) RETURNING *", [username, password, refreshToken]);
+        } catch {
+            return res.status(401)
+        }
+
+        res.status(201).json({
+            success: true,
+            data: {
+                userId: createUser.rows.user_id,
+                username,
+                accessToken,
+                refreshToken,
+            }
+        })
+    } else {
+        return res.status(409).json({ status: "error", message: "username already exists" });
+    }
+})
 
 
 // get's info about all of the audio's 
@@ -31,7 +171,7 @@ app.get('/audio/:username', async (req, res) => {
 
         const allAudioInfo = await pool.query("SELECT * FROM audios WHERE username = ($1)", [username]);
 
-        res.json(allAudioInfo.rows);
+        return res.json(allAudioInfo.rows);
     } catch (error) {
         console.error(error)
     }
