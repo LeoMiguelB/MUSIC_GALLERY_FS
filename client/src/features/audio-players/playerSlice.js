@@ -34,7 +34,6 @@ const playerSlice = createSlice({
         },
         changeActiveFilter(state, action) {
             const currentFilter = action.payload;
-
             state.activeFilter = currentFilter;
         }
     },

@@ -10,15 +10,22 @@ import Navbar from './components/Navbar';
 
 import LoginPage from './components/loginPage';
 
+import { useSelector } from 'react-redux';
+
 function App() {
 
+  const token = useSelector(state => state.user.accessToken);
+  
+  if (!token) {
+    return <LoginPage />
+  }
+
   return (
-    <div className="main-container" data-theme="dark">
+    <div className="main-container">
       <Navbar />
       <Routes>
         <Route path="/" element={<MusicLibrary />} />
         <Route path="/upload-audio" element={<AddAudio />} />
-        <Route path="/login" element={<LoginPage />} />
       </Routes>
     </div>
   )

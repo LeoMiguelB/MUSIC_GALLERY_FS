@@ -74,7 +74,7 @@ const FooterPlayer = ({ audioElem }) => {
                 <div className="footer-nav-wrapper" onClick={checkWidth} ref={noNanSong ? () => { return } : clickRef}>
                     <div className="footer-seek-bar" style={{ width: !noNanSong ? `${currentSong.progress + "%"}` : "0%" }}>
                     </div>
-                    <p>{!noNanSong ? (parseFloat((audioElem.current.currentTime) / 60).toFixed(2) + "/" + parseFloat((audioElem.current.duration) / 60).toFixed(2)) : ""}</p>
+                    <p>{(!noNanSong && audioElem?.current?.currentTime) ? (parseFloat((audioElem.current.currentTime) / 60).toFixed(2) + "/" + parseFloat((audioElem.current.duration) / 60).toFixed(2)) : ""}</p>
                 </div>
             </div>
 

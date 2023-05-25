@@ -22,23 +22,29 @@ const app = express();
 
 const pool = require('./db');
 
+const cors = require("cors");
+
 require('dotenv').config();
 
 app.use(express.json());
+
+app.use(cors());
 
 app.use((req, res, next) => {
     res.setHeader("Access-Control-Allow-Origin", "*");
     next();
 });
 
-app.delete('/logout', (req, res) => {
-    const { refreshToken } = req.body;
+app.delete('/logout', async (req, res) => {
+    const { username } = req.body;
 
-    if (refreshToken === null) {
-        return res.status(401).json({ status: "error", message: "token does not exists" });
+    let updateToken;
+    try {
+        updateToken = await pool.query("UPDATE users SET refreshtoken = null WHERE username = $1", [username]);
+        
+    } catch (error) {
+        res.status(404).json({ status: "error", message: "something went wrong when trying to log out" })
     }
-
-    const updateToken = pool.query("UPDATE users SET refreshtoken = null WHERE refreshtoken = $1", [refreshToken]);
 
 
     res.status(200).json({ status: "success", message: "successfully logged out" });
@@ -117,10 +123,7 @@ app.post('/login', async (req, res) => {
 
         return res.status(200).json({
             success: true,
-            data: {
-                username,
-                accessToken,
-            }
+            accessToken
         })
     }
 })
@@ -178,7 +181,7 @@ app.post('/signup', async (req, res) => {
 
 
 // get's info about all of the audio's 
-app.get('/audio/:username', async (req, res) => {
+app.get('/audio/:username', authenticateToken, async (req, res) => {
     try {
         const { username } = req.params;
 
@@ -191,7 +194,7 @@ app.get('/audio/:username', async (req, res) => {
 });
 
 // getting the images for the audio 
-app.get('/images/:imgName/:username', (req, res) => {
+app.get('/images/:imgName/:username', authenticateToken, (req, res) => {
     const { imgName, username } = req.params;
     const filePath = path.join(__dirname, "files", username, "images", imgName);
 
@@ -202,7 +205,7 @@ app.get('/images/:imgName/:username', (req, res) => {
 })
 
 //getting the audio 
-app.get('/audio/:audioName/:username', (req, res) => {
+app.get('/audio/:audioName/:username', authenticateToken, (req, res) => {
     const { audioName, username } = req.params;
 
     const filePath = path.join(__dirname, "files", username, "audio", audioName);
@@ -212,7 +215,7 @@ app.get('/audio/:audioName/:username', (req, res) => {
     fileStream.pipe(res);
 })
 
-app.post('/upload/:username', fileUpload({ createParentPath: true }),
+app.post('/upload/:username', authenticateToken, fileUpload({ createParentPath: true }),
     filesPayloadExists,
     filePreventDuplicate,
     filesExtLimiter(['.png', '.jpg', '.jpeg', '.mp3']),

@@ -28,6 +28,8 @@ const Player = ({ songDetails, audioElem }) => {
 
     const footerVolume = useSelector(state => state.player.globalControlVolume);
 
+    const accessToken = useSelector(state => state.user.accessToken);
+
     const [audioUrl, setAudioUrl] = useState("");
     const [imageUrl, setImageUrl] = useState("");
 
@@ -35,8 +37,12 @@ const Player = ({ songDetails, audioElem }) => {
 
     const fetchAudio = async () => {
         const audioRes = await fetch(`http://localhost:4000/audio/${songDetails.audio_name}/miguel`, {
-            method: "GET"
+            method: "GET",
+            headers: new Headers({
+                'authorization': `Bearer ${accessToken}`,
+            }),
         });
+
 
         const audioBlob = await audioRes.blob();
         const audioBlobUrl = URL.createObjectURL(audioBlob);
@@ -48,6 +54,9 @@ const Player = ({ songDetails, audioElem }) => {
         const imageRes = await fetch(`http://localhost:4000/images/${songDetails.img_name}/miguel`,
             {
                 method: "GET",
+                headers: new Headers({
+                    'authorization': `Bearer ${accessToken}`,
+                }),
             });
         const imageBlob = await imageRes.blob();
         const imageBlobUrl = URL.createObjectURL(imageBlob);
@@ -150,7 +159,7 @@ const Player = ({ songDetails, audioElem }) => {
                             </div>
 
                             <div className="time-display">
-                                <p>{currentPlayerValid ? (parseFloat((audioElem.current.currentTime) / 60).toFixed(2) + "/" + parseFloat((audioElem.current.duration) / 60).toFixed(2)) : ""}</p>
+                                <p>{(currentPlayerValid && audioElem?.current?.currentTime) ? (parseFloat((audioElem.current.currentTime) / 60).toFixed(2) + "/" + parseFloat((audioElem.current.duration) / 60).toFixed(2)) : ""}</p>
 
                             </div>
 

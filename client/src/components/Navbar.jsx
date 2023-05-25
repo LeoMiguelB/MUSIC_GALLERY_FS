@@ -4,12 +4,39 @@ import { useState } from "react";
 
 import { Link } from "react-router-dom";
 
+import { useDispatch } from "react-redux";
+
+import { logoutUser } from "../features/user/userSlice";
+
+import { useSelector } from "react-redux";
+
+
+import { useLogoutUserMutation } from "../features/api/apiSlice";
+
 const Navbar = () => {
     const [isActive, setIsActive] = useState(false);
+
+    const username = useSelector(state => state.user.username);
+
+    const dispatch = useDispatch();
+
+    const [logout, { isLoading }] = useLogoutUserMutation();
 
     //for the responsive design
     const handleOnClick = () => {
         setIsActive(!isActive);
+    }
+
+    const handleLogout = async () => {
+        try {
+            const res = await logout({ username }).unwrap();
+
+        } catch (error) {
+            if (error.data.status === 404) {
+                console.log(error)
+            }
+        }
+        dispatch(logoutUser());
     }
 
     return (
@@ -25,7 +52,7 @@ const Navbar = () => {
                     <ul>
                         <li><Link to="/">Music Library</Link></li>
                         <li><Link to="/upload-audio">Upload Audio</Link></li>
-                        <li><Link to="/login">Login</Link></li>
+                        <li><button onClick={handleLogout}>Logout</button></li>
                     </ul>
                 </div>
             </div>
