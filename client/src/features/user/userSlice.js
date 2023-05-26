@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     username: "",
-    accessToken: "",
+    isAuthenticated: false,
 }
 
 const userSlice = createSlice({
@@ -10,15 +10,18 @@ const userSlice = createSlice({
     initialState,
     reducers: {
         credentialsAdded(state, action) {
-            const { username, accessToken } = action.payload;
+            const { username } = action.payload;
 
             state.username = username;
 
-            state.accessToken = accessToken;
+            state.isAuthenticated = true;
         },
         logoutUser(state, action) {
             state.username = "";
-            state.accessToken = null;
+            state.isAuthenticated = false;
+            sessionStorage.removeItem('token');
+            sessionStorage.removeItem('refreshToken');
+
         }
     }
 })

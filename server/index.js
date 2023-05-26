@@ -40,8 +40,8 @@ app.delete('/logout', async (req, res) => {
 
     let updateToken;
     try {
-        updateToken = await pool.query("UPDATE users SET refreshtoken = null WHERE username = $1", [username]);
-        
+        updateToken = await pool.query("UPDATE users SET refreshtoken = NULL WHERE username = $1", [username]);
+
     } catch (error) {
         res.status(404).json({ status: "error", message: "something went wrong when trying to log out" })
     }
@@ -51,7 +51,7 @@ app.delete('/logout', async (req, res) => {
 })
 
 
-app.post('/token', async (req, res) => {
+app.post('/token-refresh', async (req, res) => {
     const { username, refreshToken } = req.body;
 
     const userId = await pool.query('SELECT user_id FROM users WHERE username = $1 AND refreshToken = $2', [username, refreshToken]);
@@ -103,7 +103,7 @@ app.post('/login', async (req, res) => {
                     username
                 },
                 process.env.SECRET_KEY_ACCESS,
-                { expiresIn: "1h" }
+                { expiresIn: "30m" }
             )
 
             refreshToken = jwt.sign(
@@ -123,7 +123,8 @@ app.post('/login', async (req, res) => {
 
         return res.status(200).json({
             success: true,
-            accessToken
+            accessToken,
+            refreshToken
         })
     }
 })
@@ -144,7 +145,7 @@ app.post('/signup', async (req, res) => {
             accessToken = jwt.sign(
                 { username },
                 process.env.SECRET_KEY_ACCESS,
-                { expiresIn: "1h" }
+                { expiresIn: "30m" }
             );
 
             refreshToken = jwt.sign(
@@ -172,6 +173,7 @@ app.post('/signup', async (req, res) => {
                 userId: createUser.rows.user_id,
                 username,
                 accessToken,
+                refreshToken
             }
         })
     } else {

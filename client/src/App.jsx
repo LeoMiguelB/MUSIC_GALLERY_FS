@@ -12,11 +12,40 @@ import LoginPage from './components/loginPage';
 
 import { useSelector } from 'react-redux';
 
-function App() {
+import { useEffect } from 'react';
 
-  const token = useSelector(state => state.user.accessToken);
-  
-  if (!token) {
+import { useRefreshTokenMutation } from './features/api/apiSlice';
+
+const App = () => {
+
+  const isAuthenticated = useSelector(state => state.user.isAuthenticated);
+
+  const username = useSelector(state => state.user.username);
+
+  const [refreshToken, { isLoading }] = useRefreshTokenMutation();
+
+  const handleRefreshToken = async (currRefreshToken) => {
+    try {
+      const response = await refreshToken({ refreshToken: currRefreshToken, username }).unwrap();
+      sessionStorage.setItem('token', JSON.stringify(response));
+
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  //refreshes token every 30mins
+  useEffect(() => {
+    const currRefreshToken = JSON.parse(sessionStorage.getItem('refreshToken'));
+
+    setInterval(() => {
+      if (currRefreshToken) {
+        handleRefreshToken(currRefreshToken);
+      }
+    }, 1000 * 1800);
+  }, [])
+
+  if (!isAuthenticated) {
     return <LoginPage />
   }
 
@@ -31,4 +60,4 @@ function App() {
   )
 }
 
-export default App
+export default App;

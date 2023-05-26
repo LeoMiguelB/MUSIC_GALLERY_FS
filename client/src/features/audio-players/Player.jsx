@@ -28,8 +28,6 @@ const Player = ({ songDetails, audioElem }) => {
 
     const footerVolume = useSelector(state => state.player.globalControlVolume);
 
-    const accessToken = useSelector(state => state.user.accessToken);
-
     const [audioUrl, setAudioUrl] = useState("");
     const [imageUrl, setImageUrl] = useState("");
 
@@ -39,7 +37,7 @@ const Player = ({ songDetails, audioElem }) => {
         const audioRes = await fetch(`http://localhost:4000/audio/${songDetails.audio_name}/miguel`, {
             method: "GET",
             headers: new Headers({
-                'authorization': `Bearer ${accessToken}`,
+                'authorization': `Bearer ${JSON.parse(sessionStorage.getItem('token'))}`,
             }),
         });
 
@@ -55,7 +53,7 @@ const Player = ({ songDetails, audioElem }) => {
             {
                 method: "GET",
                 headers: new Headers({
-                    'authorization': `Bearer ${accessToken}`,
+                    'authorization': `Bearer ${JSON.parse(sessionStorage.getItem('token'))}`,
                 }),
             });
         const imageBlob = await imageRes.blob();

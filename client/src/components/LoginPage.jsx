@@ -27,11 +27,16 @@ const LoginPage = () => {
         try {
             const resData = await loginUser({ username, password }).unwrap();
 
-            const { accessToken } = resData;
+            const { accessToken, refreshToken } = resData;
 
-            dispatch(credentialsAdded({ username, accessToken }));
+            sessionStorage.setItem('token', JSON.stringify(accessToken));
+
+            sessionStorage.setItem('refreshToken', JSON.stringify(refreshToken));
+
+            dispatch(credentialsAdded({ username }));
 
             setUsername("");
+
             setPassword("");
 
             navigate("/");

@@ -5,7 +5,7 @@ export const apiSlice = createApi({
     baseQuery: fetchBaseQuery({
         baseUrl: 'http://localhost:4000',
         prepareHeaders: (headers, { getState }) => {
-            const token = getState().user.accessToken;
+            const token = JSON.parse(sessionStorage.getItem('token'));
             if (token) {
                 headers.set("authorization", `Bearer ${token}`)
             }
@@ -39,9 +39,16 @@ export const apiSlice = createApi({
                 method: 'DELETE',
                 body: username
             })
+        }),
+        refreshToken: builder.mutation({
+            query: (credentials) => ({
+                url: '/token-refresh',
+                method: 'POST',
+                body: credentials
+            })
         })
 
     })
 })
 
-export const { useGetAudioInfoQuery, useAddAudioMutation, useLoginUserMutation, useLogoutUserMutation } = apiSlice;
+export const { useGetAudioInfoQuery, useAddAudioMutation, useLoginUserMutation, useLogoutUserMutation, useRefreshTokenMutation } = apiSlice;
