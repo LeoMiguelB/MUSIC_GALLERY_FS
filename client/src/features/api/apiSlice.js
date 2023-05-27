@@ -33,6 +33,13 @@ export const apiSlice = createApi({
                 body: credentials
             })
         }),
+        signupUser: builder.mutation({
+            query: (credentials) => ({
+                url: 'signup',
+                method: 'POST',
+                body: credentials,
+            })
+        }),
         logoutUser: builder.mutation({
             query: (username) => ({
                 url: '/logout',
@@ -51,4 +58,4 @@ export const apiSlice = createApi({
     })
 })
 
-export const { useGetAudioInfoQuery, useAddAudioMutation, useLoginUserMutation, useLogoutUserMutation, useRefreshTokenMutation } = apiSlice;
+export const { useGetAudioInfoQuery, useAddAudioMutation, useLoginUserMutation, useLogoutUserMutation, useRefreshTokenMutation, useSignupUserMutation } = apiSlice;

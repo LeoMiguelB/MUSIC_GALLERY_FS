@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useState } from "react";
-import { useLoginUserMutation } from "../features/api/apiSlice";
+import { useSignupUserMutation } from "../features/api/apiSlice";
 
 import { credentialsAdded } from "../features/user/userSlice";
 
@@ -9,9 +9,8 @@ import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 
-const LoginPage = () => {
-
-    const [loginUser, { isLoading }] = useLoginUserMutation();
+const SignupPage = () => {
+    const [signupUser, { isLoading }] = useSignupUserMutation();
 
     const [username, setUsername] = useState("");
 
@@ -27,7 +26,7 @@ const LoginPage = () => {
         e.preventDefault();
 
         try {
-            const resData = await loginUser({ username, password }).unwrap();
+            const resData = await signupUser({ username, password }).unwrap();
 
             const { accessToken, refreshToken } = resData;
 
@@ -44,9 +43,10 @@ const LoginPage = () => {
             navigate("/");
 
         } catch (error) {
+            console.log(error);
             if (!error) {
                 setErrMsg("no server response");
-            } else if (error?.status === 404) {
+            } else if (error?.status === 409) {
                 setErrMsg(error.data.message);
             }
         }
@@ -72,15 +72,14 @@ const LoginPage = () => {
                             required />
                     </div>
                     <div>
-                        <button >Login</button>
+                        <button >Signup</button>
                     </div>
                     <h2 style={{ color: "white" }}>{errMsg}</h2>
-                    <p style={{ color: "white" }}><Link to='/signup'>Signup</Link></p>
+                    <p style={{ color: "white" }}><Link to='/'>Login</Link></p>
                 </div>
             </form>
         </div>
     )
-
 }
 
-export default LoginPage;
+export default SignupPage;

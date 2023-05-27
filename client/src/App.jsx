@@ -16,6 +16,8 @@ import { useEffect } from 'react';
 
 import { useRefreshTokenMutation } from './features/api/apiSlice';
 
+import SignupPage from './components/SignupPage';
+
 const App = () => {
 
   const isAuthenticated = useSelector(state => state.user.isAuthenticated);
@@ -46,7 +48,15 @@ const App = () => {
   }, [])
 
   if (!isAuthenticated) {
-    return <LoginPage />
+    return (
+      <>
+        <Routes>
+          <Route path="/" element={<LoginPage />} />
+          <Route path="/signup" element={<SignupPage />} />
+        </Routes>
+      </>
+
+    )
   }
 
   return (
