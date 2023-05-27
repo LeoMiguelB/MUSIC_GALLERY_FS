@@ -5,9 +5,8 @@ export const apiSlice = createApi({
     baseQuery: fetchBaseQuery({
         baseUrl: 'http://localhost:4000',
         prepareHeaders: (headers, { getState }) => {
-            const token = JSON.parse(sessionStorage.getItem('token'));
-            if (token) {
-                headers.set("authorization", `Bearer ${token}`)
+            if (sessionStorage.getItem('token') !== "undefined") {
+                headers.set("authorization", `Bearer ${JSON.parse(sessionStorage.getItem('token'))}`)
             }
             return headers;
         }
@@ -54,7 +53,6 @@ export const apiSlice = createApi({
                 body: credentials
             })
         })
-
     })
 })
 

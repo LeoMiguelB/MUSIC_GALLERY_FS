@@ -5,6 +5,8 @@ import InputTags from "./InputTags";
 
 import { useState, useRef } from "react";
 
+import { useSelector } from "react-redux";
+
 const AddAudio = () => {
 
     const [h2Content, setH2Content] = useState('');
@@ -17,6 +19,8 @@ const AddAudio = () => {
     const inputImage = useRef();
 
     const inputAudio = useRef();
+
+    const username = useSelector(state => state.user.username);
 
     const sendFiles = async (e) => {
 
@@ -50,7 +54,7 @@ const AddAudio = () => {
         let response;
 
         if (canSave) {
-            response = await addAudio({ username: "miguel", formData });
+            response = await addAudio({ username, formData });
 
             if (response.error) {
                 setH2Content(response.error.data.status);

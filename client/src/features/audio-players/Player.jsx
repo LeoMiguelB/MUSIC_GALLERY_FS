@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { playPause, addCurrentSong, changeGlobalVolume } from "./playerSlice";
 
 
+
 const Player = ({ songDetails, audioElem }) => {
 
 
@@ -31,10 +32,12 @@ const Player = ({ songDetails, audioElem }) => {
     const [audioUrl, setAudioUrl] = useState("");
     const [imageUrl, setImageUrl] = useState("");
 
+    const username = useSelector(state => state.user.username);
+
 
 
     const fetchAudio = async () => {
-        const audioRes = await fetch(`http://localhost:4000/audio/${songDetails.audio_name}/miguel`, {
+        const audioRes = await fetch(`http://localhost:4000/audio/${songDetails.audio_name}/${username}`, {
             method: "GET",
             headers: new Headers({
                 'authorization': `Bearer ${JSON.parse(sessionStorage.getItem('token'))}`,
@@ -49,7 +52,7 @@ const Player = ({ songDetails, audioElem }) => {
     }
 
     const fetchImage = async () => {
-        const imageRes = await fetch(`http://localhost:4000/images/${songDetails.img_name}/miguel`,
+        const imageRes = await fetch(`http://localhost:4000/images/${songDetails.img_name}/${username}`,
             {
                 method: "GET",
                 headers: new Headers({

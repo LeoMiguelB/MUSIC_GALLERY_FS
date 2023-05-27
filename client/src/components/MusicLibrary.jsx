@@ -24,6 +24,8 @@ const MusicLibrary = () => {
 
     const activeFilter = useSelector(state => state.player.activeFilter);
 
+    const username = useSelector(state => state.user.username);
+
     const dispatch = useDispatch();
 
     const {
@@ -32,7 +34,7 @@ const MusicLibrary = () => {
         isSuccess,
         isError,
         error,
-    } = useGetAudioInfoQuery("miguel");
+    } = useGetAudioInfoQuery(username);
 
     const filteredAudio = useMemo(() => {
         // make a copy of the array

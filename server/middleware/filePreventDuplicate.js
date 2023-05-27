@@ -11,19 +11,25 @@ const filePreventDuplicate = (req, res, next) => {
     const AudioFolderCheck = path.join(__dirname, "..", "files", username, "audio");
 
 
-    // another solutions would be to query the DB
-    const fileNamesInFolder = fs.readdirSync(AudioFolderCheck);
+    // for now assuming error means user is first time uploading
+    try {
+        // another solutions would be to query the DB
+        const fileNamesInFolder = fs.readdirSync(AudioFolderCheck);
 
+        if (fileNamesInFolder.includes(audioName)) {
+            const message = `${audioName} exists please select another file`
+            return res.status(409).json({ status: 'error', message });
 
-
-    if (fileNamesInFolder.includes(audioName)) {
-        const message = `${audioName} exists please select another file`
-        return res.status(409).json({ status: 'error', message });
-
+        }
+        next();
+    } catch (error) {
+        console.log(error);
+        next();
     }
 
 
-    next();
+
+
 }
 
 module.exports = filePreventDuplicate;

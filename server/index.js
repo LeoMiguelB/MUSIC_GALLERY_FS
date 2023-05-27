@@ -87,7 +87,6 @@ app.post('/token-refresh', async (req, res) => {
 app.post('/login', async (req, res) => {
     const { username, password } = req.body;
 
-
     // check if user exists
     const userExists = await pool.query('SELECT user_id FROM users WHERE username = ($1) AND password = crypt(($2),password)', [username, password]);
 
@@ -132,6 +131,7 @@ app.post('/login', async (req, res) => {
 app.post('/signup', async (req, res) => {
 
     const { username, password } = req.body;
+
 
     let createUser;
 
@@ -233,11 +233,13 @@ app.post('/upload/:username', authenticateToken, fileUpload({ createParentPath: 
 
         const imageFilePath = path.join(__dirname, "files", username, "images", imgName);
 
+        const audioFilePath = path.join(__dirname, "files", username, "audio", audioName);
+
+
         files[imgName].mv(imageFilePath, (err) => {
             if (err) return res.status(500).json({ status: "error", message: err });
         })
 
-        const audioFilePath = path.join(__dirname, "files", username, "audio", audioName);
 
         files[audioName].mv(audioFilePath, (err) => {
             if (err) return res.status(500).json({ status: "error", message: err });

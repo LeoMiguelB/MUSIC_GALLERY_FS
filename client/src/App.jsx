@@ -38,11 +38,10 @@ const App = () => {
 
   //refreshes token every 30mins
   useEffect(() => {
-    const currRefreshToken = JSON.parse(sessionStorage.getItem('refreshToken'));
 
     setInterval(() => {
-      if (currRefreshToken) {
-        handleRefreshToken(currRefreshToken);
+      if (sessionStorage?.getItem('refreshToken')) {
+        handleRefreshToken(JSON.parse(sessionStorage?.getItem('refreshToken')));
       }
     }, 1000 * 1800);
   }, [])
