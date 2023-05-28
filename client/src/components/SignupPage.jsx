@@ -1,12 +1,10 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useState } from "react";
-import { useSignupUserMutation } from "../features/api/apiSlice";
+import { useSignupUserMutation } from "../features/api/authSlice";
 
 import { credentialsAdded } from "../features/user/userSlice";
 
-import { useNavigate } from "react-router-dom";
-
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 
 
 const SignupPage = () => {
@@ -22,6 +20,7 @@ const SignupPage = () => {
 
     const navigate = useNavigate();
 
+
     const handleOnSubmit = async (e) => {
         e.preventDefault();
 
@@ -30,17 +29,17 @@ const SignupPage = () => {
 
             const { accessToken, refreshToken } = resData;
 
-            sessionStorage.setItem('token', JSON.stringify(accessToken));
 
+            sessionStorage.setItem('token', JSON.stringify(accessToken));
             sessionStorage.setItem('refreshToken', JSON.stringify(refreshToken));
 
             dispatch(credentialsAdded({ username }));
 
+            navigate("/");
+
             setUsername("");
 
             setPassword("");
-
-            navigate("/");
 
         } catch (error) {
             console.log(error);
@@ -75,9 +74,11 @@ const SignupPage = () => {
                         <button >Signup</button>
                     </div>
                     <h2 style={{ color: "white" }}>{errMsg}</h2>
-                    <p style={{ color: "white" }}><Link to='/'>Login</Link></p>
+                    <p style={{ color: "white" }}><Link to='/login'>Login</Link></p>
                 </div>
             </form>
+
+
         </div>
     )
 }

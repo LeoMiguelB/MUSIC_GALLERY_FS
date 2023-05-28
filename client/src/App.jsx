@@ -4,9 +4,8 @@ import MusicLibrary from './components/MusicLibrary'
 
 import AddAudio from './features/audio-forms/AddAudio';
 
-import { Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
-import Navbar from './components/Navbar';
 
 import LoginPage from './components/loginPage';
 
@@ -18,9 +17,10 @@ import { useRefreshTokenMutation } from './features/api/apiSlice';
 
 import SignupPage from './components/SignupPage';
 
+import PrivateRoutes from './components/PrivateRoutes';
+
 const App = () => {
 
-  const isAuthenticated = useSelector(state => state.user.isAuthenticated);
 
   const username = useSelector(state => state.user.username);
 
@@ -38,33 +38,25 @@ const App = () => {
 
   //refreshes token every 30mins
   useEffect(() => {
-
     setInterval(() => {
-      if (sessionStorage?.getItem('refreshToken')) {
+      if (sessionStorage.getItem('refreshToken')) {
         handleRefreshToken(JSON.parse(sessionStorage?.getItem('refreshToken')));
       }
     }, 1000 * 1800);
   }, [])
 
-  if (!isAuthenticated) {
-    return (
-      <>
-        <Routes>
-          <Route path="/" element={<LoginPage />} />
-          <Route path="/signup" element={<SignupPage />} />
-        </Routes>
-      </>
-
-    )
-  }
-
   return (
     <div className="main-container">
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<MusicLibrary />} />
-        <Route path="/upload-audio" element={<AddAudio />} />
-      </Routes>
+      <Router>
+        <Routes>
+          <Route element={<PrivateRoutes />}>
+            <Route path="/" element={<MusicLibrary />} />
+            <Route path="/upload-audio" element={<AddAudio />} />
+          </Route>
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignupPage />} />
+        </Routes>
+      </Router>
     </div>
   )
 }

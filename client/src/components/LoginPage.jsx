@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useState } from "react";
-import { useLoginUserMutation } from "../features/api/apiSlice";
+import { useLoginUserMutation } from "../features/api/authSlice";
 
 import { credentialsAdded } from "../features/user/userSlice";
 
@@ -32,16 +32,15 @@ const LoginPage = () => {
             const { accessToken, refreshToken } = resData;
 
             sessionStorage.setItem('token', JSON.stringify(accessToken));
-
             sessionStorage.setItem('refreshToken', JSON.stringify(refreshToken));
 
             dispatch(credentialsAdded({ username }));
 
+            navigate("/");
+
             setUsername("");
 
             setPassword("");
-
-            navigate("/");
 
         } catch (error) {
             if (!error) {

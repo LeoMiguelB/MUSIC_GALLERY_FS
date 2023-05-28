@@ -167,14 +167,10 @@ app.post('/signup', async (req, res) => {
             return res.status(401)
         }
 
-        res.status(201).json({
+        return res.status(201).json({
             success: true,
-            data: {
-                userId: createUser.rows.user_id,
-                username,
-                accessToken,
-                refreshToken
-            }
+            accessToken,
+            refreshToken
         })
     } else {
         return res.status(409).json({ status: "error", message: "username already exists" });

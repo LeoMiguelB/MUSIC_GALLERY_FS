@@ -5,9 +5,8 @@ export const apiSlice = createApi({
     baseQuery: fetchBaseQuery({
         baseUrl: 'http://localhost:4000',
         prepareHeaders: (headers, { getState }) => {
-            if (sessionStorage.getItem('token') !== "undefined") {
-                headers.set("authorization", `Bearer ${JSON.parse(sessionStorage.getItem('token'))}`)
-            }
+            const accessToken = sessionStorage.getItem('token');
+            headers.set("authorization", `Bearer ${JSON.parse(accessToken)}`)
             return headers;
         }
     }),
@@ -25,27 +24,6 @@ export const apiSlice = createApi({
             }),
             invalidatesTags: ['Audio'],
         }),
-        loginUser: builder.mutation({
-            query: (credentials) => ({
-                url: '/login',
-                method: 'POST',
-                body: credentials
-            })
-        }),
-        signupUser: builder.mutation({
-            query: (credentials) => ({
-                url: 'signup',
-                method: 'POST',
-                body: credentials,
-            })
-        }),
-        logoutUser: builder.mutation({
-            query: (username) => ({
-                url: '/logout',
-                method: 'DELETE',
-                body: username
-            })
-        }),
         refreshToken: builder.mutation({
             query: (credentials) => ({
                 url: '/token-refresh',
@@ -56,4 +34,4 @@ export const apiSlice = createApi({
     })
 })
 
-export const { useGetAudioInfoQuery, useAddAudioMutation, useLoginUserMutation, useLogoutUserMutation, useRefreshTokenMutation, useSignupUserMutation } = apiSlice;
+export const { useGetAudioInfoQuery, useAddAudioMutation, useRefreshTokenMutation } = apiSlice;

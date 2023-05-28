@@ -7,6 +7,8 @@ import { useState, useRef } from "react";
 
 import { useSelector } from "react-redux";
 
+import Navbar from '../../components/Navbar';
+
 const AddAudio = () => {
 
     const [h2Content, setH2Content] = useState('');
@@ -70,6 +72,7 @@ const AddAudio = () => {
 
     return (
         <div>
+            <Navbar />
             <h1>File Uploader</h1>
             <form id="uploadForm" encType="multipart/form-data" onSubmit={sendFiles} >
                 <input type="file" id="myFiles" accept="image/*" ref={inputImage} />

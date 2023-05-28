@@ -15,6 +15,8 @@ import { playPause, addLengthProgress, handleProgress } from '../features/audio-
 
 import { useGetAudioInfoQuery } from '../features/api/apiSlice';
 
+import Navbar from './Navbar';
+
 const MusicLibrary = () => {
     const audioRef = useRef();
 
@@ -57,7 +59,7 @@ const MusicLibrary = () => {
             <Player key={song.audio_id} songDetails={song} audioElem={audioRef} />
         )
     } else if (isError) {
-        content = <div>{error}</div>
+        content = <div>{error?.data?.message}</div>
     }
 
     useEffect(() => {
@@ -85,6 +87,7 @@ const MusicLibrary = () => {
     return (
         <>
             <div>
+                <Navbar />
                 <Filter />
                 <motion.div layout className="popular-pictures">
 

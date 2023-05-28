@@ -34,13 +34,13 @@ const Player = ({ songDetails, audioElem }) => {
 
     const username = useSelector(state => state.user.username);
 
-
+    const accessToken = JSON.parse(sessionStorage.getItem('token'));
 
     const fetchAudio = async () => {
         const audioRes = await fetch(`http://localhost:4000/audio/${songDetails.audio_name}/${username}`, {
             method: "GET",
             headers: new Headers({
-                'authorization': `Bearer ${JSON.parse(sessionStorage.getItem('token'))}`,
+                'authorization': `Bearer ${accessToken}`,
             }),
         });
 
@@ -52,11 +52,14 @@ const Player = ({ songDetails, audioElem }) => {
     }
 
     const fetchImage = async () => {
+
+        const accessToken = JSON.parse(sessionStorage.getItem('token'));
+
         const imageRes = await fetch(`http://localhost:4000/images/${songDetails.img_name}/${username}`,
             {
                 method: "GET",
                 headers: new Headers({
-                    'authorization': `Bearer ${JSON.parse(sessionStorage.getItem('token'))}`,
+                    'authorization': `Bearer ${accessToken}`,
                 }),
             });
         const imageBlob = await imageRes.blob();

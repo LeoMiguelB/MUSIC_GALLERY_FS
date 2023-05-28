@@ -21,7 +21,6 @@ const userSlice = createSlice({
             state.isAuthenticated = false;
             sessionStorage.removeItem('token');
             sessionStorage.removeItem('refreshToken');
-
         }
     }
 })

@@ -11,7 +11,7 @@ import { logoutUser } from "../features/user/userSlice";
 import { useSelector } from "react-redux";
 
 
-import { useLogoutUserMutation } from "../features/api/apiSlice";
+import { useLogoutUserMutation } from "../features/api/authSlice";
 
 const Navbar = () => {
     const [isActive, setIsActive] = useState(false);
