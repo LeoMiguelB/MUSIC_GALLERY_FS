@@ -55,9 +55,13 @@ const MusicLibrary = () => {
         // put in a loading screen here
         <div>Loading...</div>
     } else if (isSuccess) {
-        content = filteredAudio.map((song, index) =>
-            <Player key={song.audio_id} songDetails={song} audioElem={audioRef} />
-        )
+        if (filteredAudio.length === 0) {
+            content = <h2>Go to upload tab to add audio...</h2>
+        } else {
+            content = filteredAudio.map((song, index) =>
+                <Player key={song.audio_id} songDetails={song} audioElem={audioRef} />
+            )
+        }
     } else if (isError) {
         content = <div>{error?.data?.message}</div>
     }

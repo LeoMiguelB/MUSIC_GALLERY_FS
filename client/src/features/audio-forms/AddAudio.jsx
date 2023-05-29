@@ -53,10 +53,13 @@ const AddAudio = () => {
             formData.append("tags", tagsJson);
 
             const response = await addAudio({ username, formData });
-            console.log(response.error.status);
 
             if (response?.error?.status === 409) {
                 setH2Content(response?.error?.data?.message);
+            }
+
+            if (response?.data?.status === 'success') {
+                setH2Content(response.data.message + ' successfully uploaded');
             }
         } else {
             setH2Content("please fill in all required inputs");
