@@ -8,6 +8,8 @@ import { useNavigate } from "react-router-dom";
 
 import { Link } from "react-router-dom";
 
+import "./login-signup.css"
+
 
 const LoginPage = () => {
 
@@ -54,10 +56,11 @@ const LoginPage = () => {
 
     return (
         <div>
-            <form encType="multipart/form-data" onSubmit={handleOnSubmit}>
+            <form className="form" encType="multipart/form-data" onSubmit={handleOnSubmit}>
                 <div>
+                    <h1 className="header">LOGIN</h1>
                     <div >
-                        <label  >
+                        <label>
                             <span >Username</span>
                         </label>
                         <input onChange={(e) => { setUsername(e.target.value) }} type="text" value={username} placeholder="username" autoComplete="off"
@@ -73,8 +76,8 @@ const LoginPage = () => {
                     <div>
                         <button >Login</button>
                     </div>
-                    <h2 style={{ color: "white" }}>{errMsg}</h2>
-                    <p style={{ color: "white" }}><Link to='/signup'>Signup</Link></p>
+                    <p className="message">Don't Have an Account?<Link to='/signup'> Register</Link></p>
+                    <h2 className="message">{errMsg}</h2>
                 </div>
             </form>
         </div>

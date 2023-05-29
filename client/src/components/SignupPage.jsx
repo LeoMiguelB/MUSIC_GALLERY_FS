@@ -6,6 +6,8 @@ import { credentialsAdded } from "../features/user/userSlice";
 
 import { Link, Navigate, useNavigate } from "react-router-dom";
 
+import "./login-signup.css";
+
 
 const SignupPage = () => {
     const [signupUser, { isLoading }] = useSignupUserMutation();
@@ -54,10 +56,11 @@ const SignupPage = () => {
 
     return (
         <div>
-            <form encType="multipart/form-data" onSubmit={handleOnSubmit}>
+            <form className="form" encType="multipart/form-data" onSubmit={handleOnSubmit}>
                 <div>
+                    <h1 className="header">SIGNUP</h1>
                     <div >
-                        <label  >
+                        <label>
                             <span >Username</span>
                         </label>
                         <input onChange={(e) => { setUsername(e.target.value) }} type="text" value={username} placeholder="username" autoComplete="off"
@@ -71,15 +74,13 @@ const SignupPage = () => {
                             required />
                     </div>
                     <div>
-                        <button >Signup</button>
+                        <button>Signup</button>
                     </div>
-                    <h2 style={{ color: "white" }}>{errMsg}</h2>
-                    <p style={{ color: "white" }}><Link to='/login'>Login</Link></p>
+                    <p className="message">Already Have an Account?<Link to='/login'> Login</Link></p>
+                    <h2 className="message">{errMsg}</h2>
                 </div>
-            </form>
-
-
-        </div>
+            </form >
+        </div >
     )
 }
 

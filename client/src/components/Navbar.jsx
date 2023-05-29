@@ -52,7 +52,7 @@ const Navbar = () => {
                     <ul>
                         <li><Link to="/">Music Library</Link></li>
                         <li><Link to="/upload-audio">Upload Audio</Link></li>
-                        <li><button onClick={handleLogout}>Logout</button></li>
+                        <li><button className="logout-btn" onClick={handleLogout}>Logout</button></li>
                     </ul>
                 </div>
             </div>

@@ -19,17 +19,11 @@ const filePreventDuplicate = (req, res, next) => {
         if (fileNamesInFolder.includes(audioName)) {
             const message = `${audioName} exists please select another file`
             return res.status(409).json({ status: 'error', message });
-
         }
-        next();
     } catch (error) {
         console.log(error);
-        next();
     }
-
-
-
-
+    next();
 }
 
 module.exports = filePreventDuplicate;

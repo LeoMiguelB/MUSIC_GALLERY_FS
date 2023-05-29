@@ -11,6 +11,8 @@
     width: 100%;
     align-items: center;
     justify-content: center;
+    border-radius: 5px;
+
 }
 
 .navbar {
@@ -19,6 +21,13 @@
     align-items: center;
     color: white;
     width: 100%;
+}
+
+.logout-btn {
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #535151;
 }
 
 .brand-title {
