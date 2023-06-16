@@ -24,6 +24,7 @@ const Navbar = () => {
 
     //for the responsive design
     const handleOnClick = () => {
+        console.log('updating active');
         setIsActive(!isActive);
     }
 
@@ -43,12 +44,12 @@ const Navbar = () => {
         <div className="sticky">
             <div className="navbar">
                 <div className="brand-title"><Link to="/">MIGUEL</Link></div>
-                <Link to="#" className={`toggle-button ${isActive ? 'active' : ''}`} onClick={handleOnClick}>
+                <Link to="#" className={`toggle-button`} onClick={handleOnClick}>
                     <span className="bar"></span>
                     <span className="bar"></span>
                     <span className="bar"></span>
                 </Link>
-                <div className="navbar-links">
+                <div className={`navbar-links ${isActive ? 'active' : ''}`}>
                     <ul>
                         <li><Link to="/">Music Library</Link></li>
                         <li><Link to="/upload-audio">Upload Audio</Link></li>
