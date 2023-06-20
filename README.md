@@ -10,7 +10,6 @@ A web app that allows people to manage there music. Similar to sites such as spl
 * @@fortawesome/free-regular-svg-icons
 * @express
 * @react
-* @mui/material
 * framer-motion
 
 ## Screenshots
