@@ -73,8 +73,10 @@ const AddAudio = () => {
             <Navbar />
             <h1>File Uploader</h1>
             <form id="uploadForm" encType="multipart/form-data" onSubmit={sendFiles} >
-                <input type="file" id="myFiles" accept="image/*" ref={inputImage} />
-                <input type="file" id="myFiles" accept="audio/mpeg" ref={inputAudio} />
+                <label for="myImage">Upload an image:</label>
+                <input type="file" id="myImage" name="image-input" accept="image/*" ref={inputImage} />
+                <label for="myAudio">Upload an audio:</label>
+                <input type="file" id="myAudio" accept="audio/mpeg" name="audio-input" ref={inputAudio} />
                 <InputTags tags={tags} setTags={setTags} />
                 <button>submit</button>
             </form>
