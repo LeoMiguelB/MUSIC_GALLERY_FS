@@ -43,7 +43,7 @@ const Navbar = () => {
     return (
         <div className="sticky">
             <div className="navbar">
-                <div className="brand-title"><Link to="/">MIGUEL</Link></div>
+                <div className="brand-title"><Link to="/">{username}</Link></div>
                 <Link to="#" className={`toggle-button`} onClick={handleOnClick}>
                     <span className="bar"></span>
                     <span className="bar"></span>

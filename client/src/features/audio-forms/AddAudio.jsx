@@ -13,6 +13,8 @@ const AddAudio = () => {
 
     const [h2Content, setH2Content] = useState('');
     const [addAudio, { isLoading }] = useAddAudioMutation();
+    const [imgFileName, setImgFileName] = useState('');
+    const [audioFileName, setAudioFileName] = useState('');
 
     //state for the input tags
     const [tags, setTags] = useState([]);
@@ -52,9 +54,10 @@ const AddAudio = () => {
 
             formData.append("tags", tagsJson);
 
+
             const response = await addAudio({ username, formData });
 
-            if (response?.error?.status === 409) {
+            if (response?.error?.status) {
                 setH2Content(response?.error?.data?.message);
             }
 
@@ -65,22 +68,34 @@ const AddAudio = () => {
             setH2Content("please fill in all required inputs");
         }
 
-
     }
 
+
+
+
     return (
-        <div>
+        <div >
             <Navbar />
-            <h1>File Uploader</h1>
-            <form id="uploadForm" encType="multipart/form-data" onSubmit={sendFiles} >
-                <label for="myImage">Upload an image:</label>
-                <input type="file" id="myImage" name="image-input" accept="image/*" ref={inputImage} />
-                <label for="myAudio">Upload an audio:</label>
-                <input type="file" id="myAudio" accept="audio/mpeg" name="audio-input" ref={inputAudio} />
-                <InputTags tags={tags} setTags={setTags} />
-                <button>submit</button>
-            </form>
-            <h2>{`Status: ${h2Content}`}</h2>
+            <div className="upload-container">
+                <h1>File Uploader</h1>
+                <form id="uploadForm" encType="multipart/form-data" onSubmit={sendFiles} >
+                    <div className="upload-btn-wrapper">
+                        <button className="btn">Upload an image: {imgFileName}</button>
+                        <input type="file" id="myImage" name="image-input" accept="image/*" onChange={(e) => setImgFileName(e.target.files[0].name)} ref={inputImage} />
+                    </div>
+                    <div className="upload-btn-wrapper">
+                        <button className="btn">Upload an audio: {audioFileName}</button>
+                        <input type="file" id="myAudio" accept="audio/mpeg" name="audio-input" onChange={(e) => setAudioFileName(e.target.files[0].name)} ref={inputAudio} />
+                    </div>
+                    {/* <label for="myImage">Upload an image:</label>
+                    <input type="file" id="myImage" name="image-input" accept="image/*" ref={inputImage} />
+                    <label for="myAudio">Upload an audio:</label>
+                    <input type="file" id="myAudio" accept="audio/mpeg" name="audio-input" ref={inputAudio} /> */}
+                    <InputTags tags={tags} setTags={setTags} />
+                    <button>submit</button>
+                </form>
+                <h2>{`Status: ${h2Content}`}</h2>
+            </div>
         </div>
     )
 }

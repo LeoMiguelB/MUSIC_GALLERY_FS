@@ -34,7 +34,7 @@ const InputTags = ({ tags, setTags }) => {
     }
 
     return (
-        <div>
+        <div className="outer-i-container">
             <div className="input-container">
                 {tags.map((tag, index) => (
                     <div key={index} className="tag-item">

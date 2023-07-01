@@ -13,7 +13,7 @@ const fileSizeLimiter = (req, res, next) => {
     })
 
     if (filesOverLimit.length) {
-        const message = `Upload failes! ${filesOverLimit.toString()} are over the limit of ${MB}`;
+        const message = `Upload failed! ${filesOverLimit.toString()} are over the limit of ${MB}`;
 
         return res.status(413).json({ status: "error", message });
     }

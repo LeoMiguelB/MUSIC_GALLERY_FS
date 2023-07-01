@@ -155,6 +155,17 @@ app.post('/signup', async (req, res) => {
 
             const updateRToken = await pool.query("UPDATE users SET refreshtoken = $1 WHERE username = $2", [refreshToken, username]);
 
+            // create folders for user
+            try {
+                const filePath = path.join(__dirname, "files", username);
+
+                fs.mkdirSync(filePath);
+                fs.mkdirSync(path.join(filePath, "audio"));
+                fs.mkdirSync(path.join(filePath, "images"));
+
+            } catch (error) {
+                console.log(error);
+            }
         } catch (err) {
             return res.status(401);
         }
