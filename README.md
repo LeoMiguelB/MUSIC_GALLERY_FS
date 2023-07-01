@@ -13,9 +13,9 @@ A web app that allows people to manage there music. Similar to sites such as spl
 * framer-motion
 
 ## Screenshots
-![home page](/screenshots/home-page.png)
-![upload page](/screenshots/upload-data.png)
-![login page](/screenshots/login-page.png)
+![home page](/screenshots/home-page-music-lib.png)
+![upload page](/screenshots/upload-data-music-lib.png)
+![login page](/screenshots/login-page-music-lib.png)
 
 
 
